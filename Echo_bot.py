@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import Message
 
@@ -24,29 +24,16 @@ async def process_help_command(message: Message):
                          'я пришлю тебе твое сообщение')
 
 
-# Этот хэндлер будет срабатывать на отправку боту фото
-# @dp.message()
-# async def send_photo_echo(message: Message):
-#     await message.reply_photo(message.audio.file_id)
-#
-# @dp.message()
-# async def send_video_echo(message: Message):
-#     await message.reply_video(message.video.file_id)
-#
-# @dp.message()
-# async def send_stiker_echo(message: Message):
-#     await message.reply_sticker(message.sticker.file_id)
-#
-# @dp.message()
-# async def send_audio_echo(message: Message):
-#     await message.reply_audio(message.photo[0].file_id)
-#
-#
-# Этот хэндлер будет срабатывать на любые ваши текстовые сообщения,
+# Этот хэндлер будет срабатывать на любые ваши сообщения,
 # кроме команд "/start" и "/help"
 @dp.message()
 async def send_echo(message: Message):
-    await message.reply(text=message.text)
+    try:
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.reply(text='Данный тип апдейтов не поддерживается '
+                                 'методом send_copy')
+
 
 if __name__ == '__main__':
     dp.run_polling(bot)
